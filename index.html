@@ -138,6 +138,60 @@
         box-shadow: 0 22px 48px rgba(56, 189, 248, 0.45);
       }
 
+      .hero-image{
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 6;          /* adjust to taste */
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 30px 80px var(--color-card-shadow);
+        border: 1px solid var(--color-card-border);
+      }
+
+      /* Image fill + subtle correction to match your palette */
+      .hero-image img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center 35%;
+        transform: scale(1.02);
+        filter: saturate(1.05) contrast(1.06) brightness(0.9);
+      }
+
+      /* Overlay tints and darkens for readability and blends with background */
+      .hero-image::after{
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(120% 120% at 10% 0%, rgba(56,189,248,.35), transparent 55%),
+          linear-gradient(to bottom, rgba(15,23,42,.25), rgba(15,23,42,.6));
+        pointer-events: none;
+      }
+
+      /* Light mode tweaks */
+      @media (prefers-color-scheme: light){
+        .hero-image img{ filter: saturate(1.05) contrast(1.04) brightness(1); }
+        .hero-image::after{
+          background:
+            radial-gradient(120% 120% at 10% 0%, rgba(56,189,248,.18), transparent 55%),
+            linear-gradient(to bottom, rgba(248,250,252,0), rgba(248,250,252,.25));
+        }
+      }
+
+      /* Optional: soft-edge fade so it visually "melts" into the page */
+      @supports (mask-image: radial-gradient(black, transparent)){
+        .hero-image::before{
+          content:"";
+          position:absolute;
+          inset:0;
+          background: inherit;
+          mask-image: radial-gradient(130% 150% at 50% 15%, black 60%, transparent 100%);
+          -webkit-mask-image: radial-gradient(130% 150% at 50% 15%, black 60%, transparent 100%);
+          pointer-events:none;
+        }
+      }
+
       main {
         margin-top: 4rem;
         display: grid;
@@ -314,6 +368,9 @@
   <body>
     <div class="page">
       <header>
+        <div class="hero-image">
+          <img src="./images/Dom_gruppe.jpg" alt="Cathedral group" loading="eager" />
+        </div>
         <span class="badge">Computer Vision Engineer</span>
         <div class="hero">
           <h1>Roman Flepp</h1>
