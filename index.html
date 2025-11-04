@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Roman Flepp | Computer Vision Engineer</title>
+    <title>Research & Publications | Computer Vision</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -83,13 +83,13 @@
 
       .hero {
         display: grid;
-        gap: 1.5rem;
+        gap: 1rem;
       }
 
       h1 {
         font-family: "Playfair Display", "Inter", serif;
-        font-size: clamp(2.5rem, 6vw, 4.5rem);
-        line-height: 1.05;
+        font-size: clamp(2.2rem, 5.5vw, 4rem);
+        line-height: 1.06;
         margin: 0;
         color: white;
         text-shadow: 0 10px 40px rgba(14, 165, 233, 0.35);
@@ -97,7 +97,7 @@
 
       .hero p {
         margin: 0;
-        max-width: 620px;
+        max-width: 720px;
         color: var(--color-text-muted);
         font-size: 1.1rem;
         line-height: 1.75;
@@ -141,14 +141,13 @@
       .hero-image{
         position: relative;
         width: 100%;
-        aspect-ratio: 16 / 6;          /* adjust to taste */
+        aspect-ratio: 16 / 6;
         border-radius: 24px;
         overflow: hidden;
         box-shadow: 0 30px 80px var(--color-card-shadow);
         border: 1px solid var(--color-card-border);
       }
 
-      /* Image fill + subtle correction to match your palette */
       .hero-image img{
         width: 100%;
         height: 100%;
@@ -158,7 +157,6 @@
         filter: saturate(1.05) contrast(1.06) brightness(0.9);
       }
 
-      /* Overlay tints and darkens for readability and blends with background */
       .hero-image::after{
         content: "";
         position: absolute;
@@ -169,7 +167,6 @@
         pointer-events: none;
       }
 
-      /* Light mode tweaks */
       @media (prefers-color-scheme: light){
         .hero-image img{ filter: saturate(1.05) contrast(1.04) brightness(1); }
         .hero-image::after{
@@ -179,7 +176,6 @@
         }
       }
 
-      /* Optional: soft-edge fade so it visually "melts" into the page */
       @supports (mask-image: radial-gradient(black, transparent)){
         .hero-image::before{
           content:"";
@@ -367,42 +363,31 @@
   </head>
   <body>
     <div class="page">
+      <!-- De-personalized header -->
       <header>
         <div class="hero-image">
-          <img src="./images/Dom_gruppe.jpg" alt="Cathedral group" loading="eager" />
+          <img src="./images/Dom_gruppe.png" alt="Research banner image" loading="eager" />
         </div>
-        <span class="badge">Computer Vision Engineer</span>
         <div class="hero">
-          <h1>Roman Flepp</h1>
+          <span class="badge">Research & Publications</span>
+          <h1>Computer Vision Research</h1>
           <p>
-            I build intelligent imaging systems that bridge research and production for edge devices
-            and medical robotics. My work focusses on computational photography and nowadays mostly 2D&ndash;3D
-            registration for medical imaging modalities.
+            Work spanning computational photography and 2D–3D registration for medical imaging.
+            Datasets, methods, and benchmarks with emphasis on practical, efficient deployment.
           </p>
           <div class="cta-row">
-            <a class="cta secondary" href="https://www.linkedin.com/in/roman-flepp/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a class="cta primary" href="#papers">View papers</a>
           </div>
         </div>
       </header>
 
       <main>
-        <section aria-labelledby="about">
-          <h2 id="about">About</h2>
-          <div class="bio">
-            <p>
-            Hey! I’m Roman Flepp, a Computer Vision Engineer working on edge device computational photography and 2D–3D registration for medical applications.
-            </p>
-            <p>
-              Beyond the lab, I never miss a chance to capture the world through my own lens. Explore my photography on <a href="https://www.instagram.com/twintheworld" target="_blank" rel="noreferrer">Instagram</a>.
-            </p>
-          </div>
-        </section>
-
+        <!-- Papers first -->
         <section aria-labelledby="papers">
           <h2 id="papers">Recent Research</h2>
           <div class="papers">
             <article class="paper-card">
-              <div class="paper-meta">CVPR 2024 &bull; Computational Photography</div>
+              <div class="paper-meta">CVPR 2024 • Computational Photography</div>
               <h3>Real-World Mobile Image Denoising Dataset with Efficient Baselines</h3>
               <p class="paper-description">
                 A curated dataset that captures the complexity of mobile noise patterns alongside strong
@@ -416,12 +401,12 @@
             </article>
 
             <article class="paper-card">
-              <div class="paper-meta">ArXiv 2025 &bull; Medical Imaging</div>
+              <div class="paper-meta">arXiv 2025 • Medical Imaging</div>
               <h3>Bone Substructure Contours for 2D/3D Registration</h3>
               <p class="paper-description">
-                Introducing contour-based representations that dramatically improve registration robustness,
-                enabling precise alignment between intraoperative X-rays and 3D anatomical models. The
-                approach accelerates surgical planning and enhances guidance quality in orthopaedic workflows.
+                Contour-based representations that improve registration robustness,
+                enabling precise alignment between intraoperative X-rays and 3D anatomical models.
+                The approach accelerates surgical planning and enhances guidance quality in orthopaedic workflows.
               </p>
               <div class="paper-links">
                 <a href="https://www.arxiv.org/abs/2506.13292" target="_blank" rel="noreferrer">Read on arXiv</a>
@@ -430,10 +415,30 @@
             </article>
           </div>
         </section>
+
+        <!-- Personal section moved below papers -->
+        <section aria-labelledby="about">
+          <h2 id="about">About Roman Flepp</h2>
+          <div class="bio">
+            <span class="badge">Computer Vision Engineer</span>
+            <p>
+              I build intelligent imaging systems that bridge research and production for edge devices
+              and medical robotics. Focus areas include computational photography and 2D–3D registration
+              for medical imaging modalities.
+            </p>
+            <p>
+              Outside of research, I explore photography. See more on
+              <a href="https://www.instagram.com/twintheworld" target="_blank" rel="noreferrer">Instagram</a>.
+            </p>
+            <div class="cta-row">
+              <a class="cta secondary" href="https://www.linkedin.com/in/roman-flepp/" target="_blank" rel="noreferrer">LinkedIn</a>
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer>
-        &copy; <span id="year"></span> Roman Flepp &mdash; Always curious about the next pixel-perfect story.
+        &copy; <span id="year"></span> Roman Flepp
       </footer>
     </div>
 
