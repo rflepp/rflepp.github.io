@@ -183,16 +183,6 @@
       font-size: 1.1em;
     }
 
-    .ai-disclaimer {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      opacity: 0.55;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      margin-bottom: 1.25rem;
-    }
-
     .bio {
       color: var(--text-muted);
       font-size: 1.05rem;
@@ -329,7 +319,6 @@
             <div class="paper-meta mono">${p.venue}</div>
             <h3>${p.title}</h3>
             <p class="paper-description">${p.summary}</p>
-            ${p.ai_generated ? `<div class="ai-disclaimer mono">✨ AI-generated summary</div>` : ''}
             <div class="paper-links">
               ${p.links.map(l => `<a href="${l.url}" target="_blank" rel="noreferrer">${l.text}</a>`).join('')}
             </div>

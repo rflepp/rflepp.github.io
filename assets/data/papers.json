@@ -3,8 +3,7 @@
     "id": "2606.03893",
     "title": "Electromagnetic Navigation for Femoral Osteotomy Using High-Accuracy X-ray-to-CT Registration",
     "venue": "arXiv 2026 • Computer Vision",
-    "summary": "Accurate execution of preoperative plans in corrective femoral osteotomies remains challenging.",
-    "ai_generated": false,
+    "summary": "Accurate execution of preoperative plans in corrective femoral osteotomies remains challenging. Current techniques are limited by variable accuracy, invasiveness, and radiation exposure, with free-hand methods and patient-specific instrumentation (PSI) often requiring >30 and >6 fluoroscopic images, respectively. We present an integrated, electromagnetic tracking (EMT)-based navigation system for femoral osteotomies that minimizes dissection and intraoperative fluoroscopy. The system couples CT-based preoperative planning with one-time intraoperative C-arm calibration and accurate X-ray-to-CT registration from two fluoroscopic images acquired at initialization. This enables real-time, fluoroscopy-free EMT navigation of the saw blade and bone fragments relative to the preoperative plan, and is compatible with uniplanar and biplanar osteotomies. In a feasibility study using 18 synthetic femora, EMT guidance significantly outperformed free-hand execution in total angular error ($(3.05 \\pm 0.75)^\\circ$ vs.\\ $(6.32 \\pm 2.36)^\\circ$, $p=0.031$), assuming the same minimal surgical exposure for both. No EMT-guided trials exceeded the >5° clinical threshold, whereas free-hand produced 4 outliers of 6 trials. The system achieved statistical equivalence ($\\pm 2^\\circ$, $\\pm 2,\\text{mm}$) to PSI for total angular ($p \\le 0.02$) and total translational ($p=0.048$) errors, with no significant differences in user questionnaire scores. By transferring preoperative plans using only two fluoroscopic images while matching PSI accuracy without additional surgical exposure, the proposed system motivates subsequent cadaveric and clinical validation.",
     "links": [
       {
         "text": "Read on arXiv",
@@ -14,22 +13,21 @@
   },
   {
     "id": "2511.14286",
-    "title": "NeuralBoneReg: A Novel Self-Supervised Method for Robust and Accurate Multi-Modal Bone Surface Registration",
+    "title": "NeuralBoneReg: An Instance-Specific Label-Free Point Cloud-Based Method for Multi-Modal Bone Surface Registration",
     "venue": "arXiv 2025 • Computer Vision",
-    "summary": "In computer- and robot-assisted orthopedic surgery (CAOS), patient-specific surgical plans derived from preoperative imaging define target locations and implant trajectories.",
+    "summary": "In computer- and robot-assisted orthopedic surgery (CAOS), patient-specific surgical plans derived from preoperative imaging define target locations and implant trajectories. During surgery, these plans must be accurately transferred, relying on precise cross-registration between preoperative and intraoperative data. However, substantial modality heterogeneity across imaging modalities makes this registration challenging and error-prone. Robust, automatic, and modality-agnostic bone surface registration is therefore clinically important. We propose NeuralBoneReg, a self-supervised, surface-based framework that registers bone surfaces using 3D point clouds as a modality-agnostic representation. NeuralBoneReg includes two modules: an implicit neural unsigned distance field (UDF) that learns the preoperative bone model, and an MLP-based registration module that performs global initialization and local refinement by generating transformation hypotheses to align the intraoperative point cloud with the neural UDF. Unlike SOTA supervised methods, NeuralBoneReg operates in a self-supervised manner, without requiring inter-subject training data. We evaluated NeuralBoneReg against baseline methods on two publicly available multi-modal datasets: a CT-ultrasound dataset of the fibula and tibia (UltraBones100k) and a CT-RGB-D dataset of spinal vertebrae (SpineDepth). The evaluation also includes a newly introduced CT-ultrasound dataset of cadaveric subjects containing femur and pelvis (UltraBones-Hip), which will be made publicly available. NeuralBoneReg matches or surpasses existing methods across all datasets, achieving mean RRE/RTE of 1.83°/2.02 mm on UltraBones100k, 1.90°/1.56 mm on UltraBones-Hip, and 3.78°/2.80 mm on SpineDepth. These results demonstrate strong generalizability across anatomies and modalities, providing robust and accurate cross-modal alignment for CAOS.",
     "links": [
       {
         "text": "Read on arXiv",
         "url": "https://arxiv.org/abs/2511.14286"
       }
-    ],
-    "ai_generated": false
+    ]
   },
   {
     "id": "2506.13292",
-    "title": "Bone Substructure Contours for 2D/3D Registration",
+    "title": "Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours",
     "venue": "arXiv 2025 • Computer Vision",
-    "summary": "Purpose: Accurate intraoperative X-ray/CT registration is essential for surgical navigation in orthopedic procedures.",
+    "summary": "Purpose: Accurate intraoperative X-ray/CT registration is essential for surgical navigation in orthopedic procedures. However, existing methods struggle with consistently achieving sub-millimeter accuracy, robustness under broad initial pose estimates or need manual key-point annotations. This work aims to address these challenges by proposing a novel multi-view X-ray/CT registration method for intraoperative bone registration. Methods: The proposed registration method consists of a multi-view, contour-based iterative closest point (ICP) optimization. Unlike previous methods, which attempt to match bone contours across the entire silhouette in both imaging modalities, we focus on matching specific subcategories of contours corresponding to bone substructures. This leads to reduced ambiguity in the ICP matches, resulting in a more robust and accurate registration solution. This approach requires only two X-ray images and operates fully automatically. Additionally, we contribute a dataset of 5 cadaveric specimens, including real X-ray images, X-ray image poses and the corresponding CT scans. Results: The proposed registration method is evaluated on real X-ray images using mean reprojection error (mRPD). The method consistently achieves sub-millimeter accuracy with a mRPD 0.67mm compared to 5.35mm by a commercial solution requiring manual intervention. Furthermore, the method offers improved practical applicability, being fully automatic. Conclusion: Our method offers a practical, accurate, and efficient solution for multi-view X-ray/CT registration in orthopedic surgeries, which can be easily combined with tracking systems. By improving registration accuracy and minimizing manual intervention, it enhances intraoperative navigation, contributing to more accurate and effective surgical outcomes in computer-assisted surgery (CAS).",
     "links": [
       {
         "text": "Read on arXiv",
@@ -39,8 +37,7 @@
         "text": "Project page",
         "url": "https://rflepp.github.io/BoneSubstructureContours2D3DRegistration/"
       }
-    ],
-    "ai_generated": false
+    ]
   },
   {
     "id": "flepp_cvpr_2024",

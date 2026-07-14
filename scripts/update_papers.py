@@ -4,7 +4,6 @@ import json
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
-import time
 
 # Configuration
 ARXIV_AUTHOR_NAME = "Roman Flepp"
@@ -99,74 +98,13 @@ def parse_arxiv_xml(xml_data):
             "id": base_id,
             "title": title,
             "venue": venue,
-            "abstract": abstract,
+            "summary": abstract, # We just use the full abstract directly as the summary
             "links": links
         })
         
     return entries
 
-def generate_summary(title, abstract, api_key):
-    if not api_key:
-        print("No GEMINI_API_KEY found. Falling back to truncated abstract.")
-        # Fallback to the first sentence of the abstract, up to 180 chars
-        first_sentence = abstract.split('.')[0] + '.'
-        if len(first_sentence) > 180:
-            first_sentence = first_sentence[:177] + "..."
-        return first_sentence, False
-
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={api_key}"
-    prompt = (
-        f"You are a professional research assistant.\n"
-        f"Summarize the following computer vision/medical imaging paper abstract into a few concise, professional sentences for a researcher's portfolio website.\n"
-        f"Focus on the primary contribution or method. Write in third-person, active voice, and do not use marketing fluff.\n\n"
-        f"Paper Title: {title}\n"
-        f"Abstract: {abstract}"
-    )
-    
-    payload = {
-        "contents": [{
-            "parts": [{
-                "text": prompt
-            }]
-        }],
-        "generationConfig": {
-            "temperature": 0.2,
-            "maxOutputTokens": 150
-        }
-    }
-    
-    max_retries = 3
-    for attempt in range(max_retries):
-        try:
-            # Add a small delay between requests to be gentle on free-tier limits
-            if attempt > 0:
-                wait_time = 2 ** attempt
-                print(f"Retrying in {wait_time}s due to previous error...")
-                time.sleep(wait_time)
-                
-            data = json.dumps(payload).encode('utf-8')
-            req = urllib.request.Request(
-                url, 
-                data=data, 
-                headers={'Content-Type': 'application/json'}
-            )
-            with urllib.request.urlopen(req, timeout=15) as response:
-                res_data = json.loads(response.read().decode('utf-8'))
-                summary = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
-                summary = summary.replace('"', '').replace('`', '').strip()
-                return summary, True
-        except Exception as e:
-            print(f"Attempt {attempt + 1}/{max_retries} failed to call Gemini API: {e}")
-            
-    # Fallback if all retries fail
-    first_sentence = abstract.split('.')[0] + '.'
-    if len(first_sentence) > 180:
-        first_sentence = first_sentence[:177] + "..."
-    return first_sentence, False
-
 def main():
-    api_key = os.environ.get("GEMINI_API_KEY")
-    
     # 1. Load existing papers
     if os.path.exists(PAPERS_JSON_PATH):
         with open(PAPERS_JSON_PATH, 'r', encoding='utf-8') as f:
@@ -192,52 +130,45 @@ def main():
         existing_paper = existing_papers_map.get(paper_id)
         
         if existing_paper is not None:
-            # If it already has an AI summary, or we don't have an API key to update it, skip.
-            if existing_paper.get("ai_generated") is True or not api_key:
-                continue
-                
-            print(f"\nUpdating summary for existing paper: {entry['title']} (ID: {paper_id})")
-            print("Generating short summary using Gemini...")
-            summary, is_ai = generate_summary(entry["title"], entry["abstract"], api_key)
-            print(f"Summary: {summary}")
+            # Check if title, venue, or summary (abstract) needs updating/synchronizing
+            needs_update = (
+                existing_paper.get("summary") != entry["summary"] or
+                existing_paper.get("venue") != entry["venue"] or
+                existing_paper.get("title") != entry["title"] or
+                "ai_generated" in existing_paper # We want to remove the ai_generated field
+            )
             
-            existing_paper["summary"] = summary
-            existing_paper["ai_generated"] = is_ai
-            existing_paper["venue"] = entry["venue"]
-            changes_made = True
+            if needs_update:
+                print(f"Updating abstract/details for paper: {entry['title']} (ID: {paper_id})")
+                existing_paper["title"] = entry["title"]
+                existing_paper["summary"] = entry["summary"]
+                existing_paper["venue"] = entry["venue"]
+                # Remove ai_generated field since we are displaying full abstracts
+                existing_paper.pop("ai_generated", None)
+                changes_made = True
             
         else:
             # Completely new paper
-            print(f"\nNew paper found: {entry['title']} (ID: {paper_id})")
-            print("Generating short summary using Gemini...")
-            summary, is_ai = generate_summary(entry["title"], entry["abstract"], api_key)
-            print(f"Summary: {summary}")
-            
+            print(f"New paper found: {entry['title']} (ID: {paper_id})")
             new_paper = {
                 "id": paper_id,
                 "title": entry["title"],
                 "venue": entry["venue"],
-                "summary": summary,
-                "ai_generated": is_ai,
+                "summary": entry["summary"],
                 "links": entry["links"]
             }
-            
             papers.insert(0, new_paper)
             existing_papers_map[paper_id] = new_paper
             changes_made = True
-
-        # Be gentle to free-tier rate limits by sleeping 2 seconds between requests
-        if changes_made and api_key:
-            time.sleep(2)
 
     # 3. Save updated papers back to JSON
     if changes_made:
         os.makedirs(os.path.dirname(PAPERS_JSON_PATH), exist_ok=True)
         with open(PAPERS_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(papers, f, indent=2, ensure_ascii=False)
-        print(f"\nSuccessfully updated papers and saved to {PAPERS_JSON_PATH}.")
+        print(f"Successfully updated papers and saved to {PAPERS_JSON_PATH}.")
     else:
-        print("\nNo updates needed.")
+        print("No updates needed.")
 
 if __name__ == "__main__":
     main()
