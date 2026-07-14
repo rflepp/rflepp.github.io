@@ -4,6 +4,7 @@ import json
 import urllib.request
 import urllib.parse
 import xml.etree.ElementTree as ET
+import time
 
 # Configuration
 ARXIV_AUTHOR_NAME = "Roman Flepp"
@@ -134,25 +135,34 @@ def generate_summary(title, abstract, api_key):
         }
     }
     
-    try:
-        data = json.dumps(payload).encode('utf-8')
-        req = urllib.request.Request(
-            url, 
-            data=data, 
-            headers={'Content-Type': 'application/json'}
-        )
-        with urllib.request.urlopen(req, timeout=15) as response:
-            res_data = json.loads(response.read().decode('utf-8'))
-            summary = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
-            summary = summary.replace('"', '').replace('`', '').strip()
-            return summary, True
-    except Exception as e:
-        print(f"Error calling Gemini API: {e}")
-        # Fallback
-        first_sentence = abstract.split('.')[0] + '.'
-        if len(first_sentence) > 180:
-            first_sentence = first_sentence[:177] + "..."
-        return first_sentence, False
+    max_retries = 3
+    for attempt in range(max_retries):
+        try:
+            # Add a small delay between requests to be gentle on free-tier limits
+            if attempt > 0:
+                wait_time = 2 ** attempt
+                print(f"Retrying in {wait_time}s due to previous error...")
+                time.sleep(wait_time)
+                
+            data = json.dumps(payload).encode('utf-8')
+            req = urllib.request.Request(
+                url, 
+                data=data, 
+                headers={'Content-Type': 'application/json'}
+            )
+            with urllib.request.urlopen(req, timeout=15) as response:
+                res_data = json.loads(response.read().decode('utf-8'))
+                summary = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
+                summary = summary.replace('"', '').replace('`', '').strip()
+                return summary, True
+        except Exception as e:
+            print(f"Attempt {attempt + 1}/{max_retries} failed to call Gemini API: {e}")
+            
+    # Fallback if all retries fail
+    first_sentence = abstract.split('.')[0] + '.'
+    if len(first_sentence) > 180:
+        first_sentence = first_sentence[:177] + "..."
+    return first_sentence, False
 
 def main():
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -215,6 +225,10 @@ def main():
             papers.insert(0, new_paper)
             existing_papers_map[paper_id] = new_paper
             changes_made = True
+
+        # Be gentle to free-tier rate limits by sleeping 2 seconds between requests
+        if changes_made and api_key:
+            time.sleep(2)
 
     # 3. Save updated papers back to JSON
     if changes_made:

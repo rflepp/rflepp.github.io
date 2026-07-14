@@ -15,20 +15,21 @@
   {
     "id": "2511.14286",
     "title": "NeuralBoneReg: A Novel Self-Supervised Method for Robust and Accurate Multi-Modal Bone Surface Registration",
-    "venue": "Arxiv 2025 • Medical Imaging",
-    "summary": "A self-supervised framework for robust bone surface registration using 3D point clouds. It achieves high accuracy across diverse modalities (CT, ultrasound, RGB-D) and anatomies without requiring inter-subject training data.",
+    "venue": "arXiv 2025 • Computer Vision",
+    "summary": "In computer- and robot-assisted orthopedic surgery (CAOS), patient-specific surgical plans derived from preoperative imaging define target locations and implant trajectories.",
     "links": [
       {
         "text": "Read on arXiv",
         "url": "https://arxiv.org/abs/2511.14286"
       }
-    ]
+    ],
+    "ai_generated": false
   },
   {
     "id": "2506.13292",
     "title": "Bone Substructure Contours for 2D/3D Registration",
-    "venue": "IPCAI & IJCARS 2025 • Medical Imaging",
-    "summary": "Contour-based representations that improve registration robustness, enabling precise alignment between intraoperative X-rays and 3D anatomical models. The approach accelerates surgical planning and enhances guidance quality in orthopaedic workflows.",
+    "venue": "arXiv 2025 • Computer Vision",
+    "summary": "Purpose: Accurate intraoperative X-ray/CT registration is essential for surgical navigation in orthopedic procedures.",
     "links": [
       {
         "text": "Read on arXiv",
@@ -38,7 +39,8 @@
         "text": "Project page",
         "url": "https://rflepp.github.io/BoneSubstructureContours2D3DRegistration/"
       }
-    ]
+    ],
+    "ai_generated": false
   },
   {
     "id": "flepp_cvpr_2024",
