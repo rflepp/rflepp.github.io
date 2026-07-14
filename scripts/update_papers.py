@@ -116,7 +116,7 @@ def generate_summary(title, abstract, api_key):
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     prompt = (
         f"You are a professional research assistant.\n"
-        f"Summarize the following computer vision/medical imaging paper abstract into exactly 1 or 2 concise, professional sentences for a researcher's portfolio website.\n"
+        f"Summarize the following computer vision/medical imaging paper abstract into 2 concise, professional sentences for a researcher's portfolio website.\n"
         f"Focus on the primary contribution or method. Write in third-person, active voice, and do not use marketing fluff.\n\n"
         f"Paper Title: {title}\n"
         f"Abstract: {abstract}"
@@ -193,6 +193,7 @@ def main():
             "title": entry["title"],
             "venue": entry["venue"],
             "summary": summary,
+            "ai_generated": True,
             "links": entry["links"]
         }
         
