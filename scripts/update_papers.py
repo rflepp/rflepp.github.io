@@ -113,7 +113,7 @@ def generate_summary(title, abstract, api_key):
             first_sentence = first_sentence[:177] + "..."
         return first_sentence, False
 
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key={api_key}"
     prompt = (
         f"You are a professional research assistant.\n"
         f"Summarize the following computer vision/medical imaging paper abstract into a few concise, professional sentences for a researcher's portfolio website.\n"
