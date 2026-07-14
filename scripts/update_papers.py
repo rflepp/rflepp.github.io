@@ -111,12 +111,12 @@ def generate_summary(title, abstract, api_key):
         first_sentence = abstract.split('.')[0] + '.'
         if len(first_sentence) > 180:
             first_sentence = first_sentence[:177] + "..."
-        return first_sentence
+        return first_sentence, False
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     prompt = (
         f"You are a professional research assistant.\n"
-        f"Summarize the following computer vision/medical imaging paper abstract into 2 concise, professional sentences for a researcher's portfolio website.\n"
+        f"Summarize the following computer vision/medical imaging paper abstract into a few concise, professional sentences for a researcher's portfolio website.\n"
         f"Focus on the primary contribution or method. Write in third-person, active voice, and do not use marketing fluff.\n\n"
         f"Paper Title: {title}\n"
         f"Abstract: {abstract}"
@@ -144,16 +144,15 @@ def generate_summary(title, abstract, api_key):
         with urllib.request.urlopen(req, timeout=15) as response:
             res_data = json.loads(response.read().decode('utf-8'))
             summary = res_data['candidates'][0]['content']['parts'][0]['text'].strip()
-            # Clean up potential markdown formatting or quotes from Gemini response
             summary = summary.replace('"', '').replace('`', '').strip()
-            return summary
+            return summary, True
     except Exception as e:
         print(f"Error calling Gemini API: {e}")
         # Fallback
         first_sentence = abstract.split('.')[0] + '.'
         if len(first_sentence) > 180:
             first_sentence = first_sentence[:177] + "..."
-        return first_sentence
+        return first_sentence, False
 
 def main():
     api_key = os.environ.get("GEMINI_API_KEY")
@@ -168,48 +167,63 @@ def main():
     else:
         papers = []
         
-    existing_ids = {paper.get("id") for paper in papers if "id" in paper}
+    existing_papers_map = {p.get("id"): p for p in papers if "id" in p}
     print(f"Loaded {len(papers)} existing papers from papers.json.")
 
-    # 2. Fetch new papers from arXiv
+    # 2. Fetch papers from arXiv
     xml_data = fetch_arxiv_papers(ARXIV_AUTHOR_NAME)
     arxiv_entries = parse_arxiv_xml(xml_data)
     
-    new_entries_count = 0
-    for entry in reversed(arxiv_entries): # Process oldest to newest so they append in correct order
+    changes_made = False
+    for entry in reversed(arxiv_entries): # Process oldest to newest
         paper_id = entry["id"]
-        if paper_id in existing_ids:
-            continue
+        
+        # Check if paper already exists
+        existing_paper = existing_papers_map.get(paper_id)
+        
+        if existing_paper is not None:
+            # If it already has an AI summary, or we don't have an API key to update it, skip.
+            if existing_paper.get("ai_generated") is True or not api_key:
+                continue
+                
+            print(f"\nUpdating summary for existing paper: {entry['title']} (ID: {paper_id})")
+            print("Generating short summary using Gemini...")
+            summary, is_ai = generate_summary(entry["title"], entry["abstract"], api_key)
+            print(f"Summary: {summary}")
             
-        print(f"\nNew paper found: {entry['title']} (ID: {paper_id})")
-        print("Generating short summary using Gemini...")
-        
-        summary = generate_summary(entry["title"], entry["abstract"], api_key)
-        print(f"Summary: {summary}")
-        
-        # Construct new paper data
-        new_paper = {
-            "id": paper_id,
-            "title": entry["title"],
-            "venue": entry["venue"],
-            "summary": summary,
-            "ai_generated": True,
-            "links": entry["links"]
-        }
-        
-        # Prepend to list (newest papers at the top)
-        papers.insert(0, new_paper)
-        existing_ids.add(paper_id)
-        new_entries_count += 1
+            existing_paper["summary"] = summary
+            existing_paper["ai_generated"] = is_ai
+            existing_paper["venue"] = entry["venue"]
+            changes_made = True
+            
+        else:
+            # Completely new paper
+            print(f"\nNew paper found: {entry['title']} (ID: {paper_id})")
+            print("Generating short summary using Gemini...")
+            summary, is_ai = generate_summary(entry["title"], entry["abstract"], api_key)
+            print(f"Summary: {summary}")
+            
+            new_paper = {
+                "id": paper_id,
+                "title": entry["title"],
+                "venue": entry["venue"],
+                "summary": summary,
+                "ai_generated": is_ai,
+                "links": entry["links"]
+            }
+            
+            papers.insert(0, new_paper)
+            existing_papers_map[paper_id] = new_paper
+            changes_made = True
 
     # 3. Save updated papers back to JSON
-    if new_entries_count > 0:
+    if changes_made:
         os.makedirs(os.path.dirname(PAPERS_JSON_PATH), exist_ok=True)
         with open(PAPERS_JSON_PATH, 'w', encoding='utf-8') as f:
             json.dump(papers, f, indent=2, ensure_ascii=False)
-        print(f"\nSuccessfully added {new_entries_count} new papers and saved to {PAPERS_JSON_PATH}.")
+        print(f"\nSuccessfully updated papers and saved to {PAPERS_JSON_PATH}.")
     else:
-        print("\nNo new papers found. No updates needed.")
+        print("\nNo updates needed.")
 
 if __name__ == "__main__":
     main()
