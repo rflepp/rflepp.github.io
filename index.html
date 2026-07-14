@@ -158,6 +158,35 @@
       color: var(--text-muted);
       font-size: 0.95rem;
       margin-bottom: 1.5rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.6;
+    }
+
+    .paper-card.expanded .paper-description {
+      display: block;
+      overflow: visible;
+    }
+
+    .toggle-abstract {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.75rem;
+      cursor: pointer;
+      padding: 0;
+      margin-bottom: 1.5rem;
+      display: inline-block;
+      outline: none;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .toggle-abstract:hover {
+      text-decoration: underline;
     }
 
     .paper-links {
@@ -319,6 +348,7 @@
             <div class="paper-meta mono">${p.venue}</div>
             <h3>${p.title}</h3>
             <p class="paper-description">${p.summary}</p>
+            ${p.summary && p.summary.length > 250 ? `<button class="toggle-abstract mono" onclick="toggleAbstract(this)">Show Abstract</button>` : ''}
             <div class="paper-links">
               ${p.links.map(l => `<a href="${l.url}" target="_blank" rel="noreferrer">${l.text}</a>`).join('')}
             </div>
@@ -334,6 +364,12 @@
       }
     }
     loadPublications();
+
+    function toggleAbstract(btn) {
+      const card = btn.closest('.paper-card');
+      const isExpanded = card.classList.toggle('expanded');
+      btn.textContent = isExpanded ? 'Hide Abstract' : 'Show Abstract';
+    }
 
     const spotlight = document.getElementById('spotlight');
     let mx = 0, my = 0, cx = 0, cy = 0;
