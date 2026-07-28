@@ -36,6 +36,10 @@
       {
         "text": "Read on arXiv",
         "url": "https://www.arxiv.org/abs/2506.13292"
+      },
+      {
+        "text": "Dataset",
+        "url": "https://huggingface.co/datasets/eigenvivek/xvr-data"
       }
     ]
   },
