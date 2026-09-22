@@ -8,7 +8,7 @@ Portfolio homepage: /index.html — lists recent publications (fetched from /ass
 
 - [Electromagnetic Navigation for Femoral Osteotomy Using High-Accuracy X-ray-to-CT Registration](papers/electromagnetic-navigation-femoral-osteotomy.md): arXiv 2606.03893, to appear in IJCARS. EMT-based surgical navigation using X-ray-to-CT registration from two fluoroscopic images; 52% lower angular error than free-hand, statistically equivalent to patient-specific instrumentation. HTML version with figures/video: [electromagnetic-navigation-femoral-osteotomy.html](electromagnetic-navigation-femoral-osteotomy.html).
 - [NeuralBoneReg: An Instance-Specific Label-Free Point Cloud-Based Method for Multi-Modal Bone Surface Registration](papers/neuralbonereg.md): arXiv 2511.14286, Medical Image Analysis. Self-supervised, modality-agnostic (CT/ultrasound/RGB-D) bone surface registration via a neural unsigned distance field and MLP registration head.
-- [Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours](papers/bone-substructure-contours-xray-ct-registration.md): arXiv 2506.13292, IPCAI 2025. Fully automatic, contour-based multi-view ICP registration reaching 0.67mm mean reprojection error from two X-ray images.
+- [Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours](papers/bone-substructure-contours-xray-ct-registration.md): arXiv 2506.13292, IPCAI 2025, published in IJCARS (DOI 10.1007/s11548-025-03391-4). Fully automatic, contour-based multi-view ICP registration reaching 0.67mm mean reprojection error from two X-ray images. HTML version with figures/video: [bone-substructure-contours-xray-ct-registration.html](bone-substructure-contours-xray-ct-registration.html).
 - [Real-World Mobile Image Denoising Dataset with Efficient Baselines](papers/mobile-image-denoising-cvpr2024.md): CVPR 2024. Real-world mobile-noise denoising dataset with on-device-efficient baseline models.
 
 ## Machine-readable data
@@ -18,4 +18,5 @@ Portfolio homepage: /index.html — lists recent publications (fetched from /ass
 ## Optional
 
 - LinkedIn: https://www.linkedin.com/in/roman-flepp/
+- Google Scholar: https://scholar.google.com/citations?user=_k_9m5wAAAAJ&hl=de
 - Instagram (photography): https://www.instagram.com/twintheworld
