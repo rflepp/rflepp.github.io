@@ -1,0 +1,21 @@
+# Roman Flepp
+
+> Computer vision research engineer at University Children's Hospital Zurich and University Hospital Balgrist (ROCS), working on 2D/3D X-ray-to-CT registration, electromagnetic surgical navigation, and computational photography for orthopedic surgery.
+
+Portfolio homepage: /index.html — lists recent publications (fetched from /assets/data/papers.json) and a short bio.
+
+## Publications (Markdown summaries: abstract, key contributions, quantitative results, term definitions, BibTeX)
+
+- [Electromagnetic Navigation for Femoral Osteotomy Using High-Accuracy X-ray-to-CT Registration](papers/electromagnetic-navigation-femoral-osteotomy.md): arXiv 2606.03893, to appear in IJCARS. EMT-based surgical navigation using X-ray-to-CT registration from two fluoroscopic images; 52% lower angular error than free-hand, statistically equivalent to patient-specific instrumentation. HTML version with figures/video: [electromagnetic-navigation-femoral-osteotomy.html](electromagnetic-navigation-femoral-osteotomy.html).
+- [NeuralBoneReg: An Instance-Specific Label-Free Point Cloud-Based Method for Multi-Modal Bone Surface Registration](papers/neuralbonereg.md): arXiv 2511.14286, Medical Image Analysis. Self-supervised, modality-agnostic (CT/ultrasound/RGB-D) bone surface registration via a neural unsigned distance field and MLP registration head.
+- [Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours](papers/bone-substructure-contours-xray-ct-registration.md): arXiv 2506.13292, IPCAI 2025. Fully automatic, contour-based multi-view ICP registration reaching 0.67mm mean reprojection error from two X-ray images.
+- [Real-World Mobile Image Denoising Dataset with Efficient Baselines](papers/mobile-image-denoising-cvpr2024.md): CVPR 2024. Real-world mobile-noise denoising dataset with on-device-efficient baseline models.
+
+## Machine-readable data
+
+- [/assets/data/papers.json](assets/data/papers.json): structured JSON of all publications (title, venue, abstract, key contributions, links), used to render the homepage and kept up to date by an automated arXiv sync.
+
+## Optional
+
+- LinkedIn: https://www.linkedin.com/in/roman-flepp/
+- Instagram (photography): https://www.instagram.com/twintheworld

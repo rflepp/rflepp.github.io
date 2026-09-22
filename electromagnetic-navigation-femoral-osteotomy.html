@@ -5,6 +5,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Electromagnetic Navigation for Femoral Osteotomy | Roman Flepp</title>
+  <meta name="description"
+    content="EMT-based surgical navigation for femoral corrective osteotomy using X-ray-to-CT registration from two fluoroscopic images. 52% lower angular error than free-hand, statistically equivalent to patient-specific instrumentation." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Electromagnetic Navigation for Femoral Osteotomy Using High-Accuracy X-ray-to-CT Registration",
+    "author": [
+      { "@type": "Person", "name": "Roman Flepp" },
+      { "@type": "Person", "name": "Arend Nieuwland" },
+      { "@type": "Person", "name": "Bastian Sigrist" },
+      { "@type": "Person", "name": "Philipp Fürnstahl" },
+      { "@type": "Person", "name": "Lilian Calvet" },
+      { "@type": "Person", "name": "Thomas Dreher" }
+    ],
+    "abstract": "Accurate execution of preoperative plans in corrective femoral osteotomies remains challenging. We present an integrated, electromagnetic tracking (EMT)-based navigation system for femoral osteotomies that minimizes dissection and intraoperative fluoroscopy, using X-ray-to-CT registration from two fluoroscopic images. EMT guidance reduced total angular error by 52% versus free-hand execution (3.05° ± 0.75° vs. 6.32° ± 2.36°, p=0.031) and achieved statistical equivalence to patient-specific instrumentation.",
+    "url": "https://arxiv.org/abs/2606.03893",
+    "sameAs": "https://arxiv.org/abs/2606.03893",
+    "isPartOf": { "@type": "PublicationVolume", "name": "arXiv preprint, to appear in International Journal of Computer Assisted Radiology and Surgery (IJCARS)" }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -140,6 +161,34 @@
       margin-bottom: 1.5rem;
     }
 
+    .content-list {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin: 0 0 1.5rem;
+      padding-left: 1.4rem;
+    }
+
+    .content-list li::marker {
+      color: var(--accent);
+    }
+
+    .content-list strong {
+      color: var(--text-main);
+    }
+
+    pre.bibtex {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      color: var(--text-muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
     /* Media Containers */
     .media-box {
       background: var(--surface);
@@ -252,6 +301,13 @@
         <p class="content-text">
           To address these limitations, we present an integrated, <strong>electromagnetic tracking (EMT)-based navigation system</strong>. The workflow unifies three core components: preoperative CT-based planning, an automatic two-view C-arm calibration and X-ray-to-CT registration pipeline, and real-time intraoperative tracking of surgical tools. This system maintains a minimal surgical footprint and provides real-time guidance for sawblade positioning and fragment correction without line-of-sight constraints.
         </p>
+
+        <ul class="content-list">
+          <li><strong>Integrated EMT navigation pipeline</strong> combining CT-based preoperative planning, one-time C-arm calibration, and X-ray-to-CT registration from only two fluoroscopic images.</li>
+          <li><strong>52% lower mean angular error</strong> than free-hand technique (3.05° ± 0.75° vs. 6.32° ± 2.36°, p = 0.031), with zero EMT trials exceeding the 5° clinical threshold.</li>
+          <li><strong>Statistical equivalence to patient-specific instrumentation (PSI)</strong> in angular (p ≤ 0.02) and translational (p = 0.048) accuracy, without PSI's added soft-tissue exposure or fabrication lead time.</li>
+          <li><strong>U-Net-based automatic C-arm calibration</strong> from fluoroscopic bead detection, replacing manual calibration steps.</li>
+        </ul>
       </section>
 
       <section aria-labelledby="pipeline">
@@ -326,6 +382,22 @@
         <p class="content-text" style="margin-top: 2rem;">
           Our navigation system showed a <strong>52% reduction in mean angular error</strong> compared to free-hand techniques. Crucially, the system demonstrated statistical equivalence to PSI guides in both rotation and translation accuracy, while requiring significantly less soft-tissue exposure and only two fluoroscopic views for initialization (compared to clinical free-hand benchmarks which average over 34 images).
         </p>
+      </section>
+
+      <section aria-labelledby="citation">
+        <h2 id="citation" class="mono">05. Citation</h2>
+        <p class="content-text">
+          A machine-readable Markdown version of this page (abstract, key contributions, results table, term
+          definitions, BibTeX) is available at
+          <a href="papers/electromagnetic-navigation-femoral-osteotomy.md" style="color: var(--accent);">papers/electromagnetic-navigation-femoral-osteotomy.md</a>.
+        </p>
+        <pre class="bibtex">@article{flepp2026emtosteotomy,
+  title   = {Electromagnetic Navigation for Femoral Osteotomy Using High-Accuracy X-ray-to-CT Registration},
+  author  = {Flepp, Roman and Nieuwland, Arend and Sigrist, Bastian and F&#252;rnstahl, Philipp and Calvet, Lilian and Dreher, Thomas},
+  journal = {arXiv preprint arXiv:2606.03893},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2606.03893}
+}</pre>
       </section>
     </main>
 

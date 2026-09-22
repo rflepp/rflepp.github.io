@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours | Roman Flepp</title>
+  <meta name="description"
+    content="A fully automatic, two-view X-ray/CT registration method that matches bone substructure contours via multi-view ICP, reaching 0.67mm mean reprojection error — roughly 8x more accurate than a commercial solution requiring manual key-point annotation. Accepted to IPCAI 2025." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ScholarlyArticle",
+    "headline": "Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours",
+    "author": [
+      { "@type": "Person", "name": "Roman Flepp" },
+      { "@type": "Person", "name": "Leon Nissen" },
+      { "@type": "Person", "name": "Bastian Sigrist" },
+      { "@type": "Person", "name": "Arend Nieuwland" },
+      { "@type": "Person", "name": "Nicola Cavalcanti" },
+      { "@type": "Person", "name": "Philipp Fürnstahl" },
+      { "@type": "Person", "name": "Thomas Dreher" },
+      { "@type": "Person", "name": "Lilian Calvet" }
+    ],
+    "abstract": "Accurate intraoperative X-ray/CT registration is essential for surgical navigation in orthopedic procedures. We propose a multi-view, contour-based iterative closest point (ICP) registration method that matches bone substructure contours instead of the whole bone silhouette, requiring only two X-ray images and operating fully automatically. The method achieves sub-millimeter accuracy with a mean reprojection distance of 0.67mm, compared to 5.35mm for a commercial solution requiring manual intervention.",
+    "url": "https://arxiv.org/abs/2506.13292",
+    "sameAs": "https://doi.org/10.1007/s11548-025-03391-4",
+    "isPartOf": { "@type": "PublicationVolume", "name": "International Journal of Computer Assisted Radiology and Surgery (IPCAI 2025)" }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a0a0a;
+      --surface: #121212;
+      --text-main: #f4f4f5;
+      --text-muted: #a1a1aa;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-hover: rgba(255, 255, 255, 0.25);
+      --accent: #2dd4bf;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none;
+      z-index: -1;
+      mask-image: radial-gradient(circle at center, black, transparent 80%);
+      -webkit-mask-image: radial-gradient(circle at center, black, transparent 80%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    /* Back Link */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 3rem;
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+    }
+
+    /* Typography */
+    h1, h2, h3 {
+      font-weight: 500;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Hero header */
+    header {
+      margin-bottom: 4rem;
+    }
+
+    header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.2;
+      color: var(--text-main);
+      margin-bottom: 1.5rem;
+    }
+
+    .authors {
+      font-size: 1.05rem;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+    }
+
+    .affiliations {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .resource-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .resource-links a {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+    }
+
+    .resource-links a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* Main Sections */
+    section {
+      margin-bottom: 5rem;
+    }
+
+    section > h2 {
+      font-size: 1.4rem;
+      margin-bottom: 2rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    section > h2::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .content-text {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .content-list {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin: 0 0 1.5rem;
+      padding-left: 1.4rem;
+    }
+
+    .content-list li::marker {
+      color: var(--accent);
+    }
+
+    .content-list strong {
+      color: var(--text-main);
+    }
+
+    pre.bibtex {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      overflow-x: auto;
+      color: var(--text-muted);
+      font-family: "JetBrains Mono", monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    /* Media Containers */
+    .media-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .media-box img, .media-box video {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .media-caption {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .media-caption strong {
+      color: var(--text-main);
+    }
+
+    /* Minimal Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-family: "JetBrains Mono", monospace;
+      color: var(--accent);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.8rem;
+    }
+
+    td {
+      color: var(--text-muted);
+    }
+
+    tr:hover td {
+      color: var(--text-main);
+    }
+
+    .highlight-cell {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    /* Spotlight */
+    #spotlight {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+    }
+
+    @media (hover: none) {
+      #spotlight { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="spotlight"></div>
+
+  <div class="container">
+    <a href="index.html" class="back-link mono">← Back to home</a>
+
+    <header>
+      <h1>Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours</h1>
+      <div class="authors">
+        Roman Flepp<sup>1,2</sup>, Leon Nissen<sup>2</sup>, Bastian Sigrist<sup>2</sup>, Arend Nieuwland<sup>2</sup>, Nicola Cavalcanti<sup>2</sup>, Philipp Fürnstahl<sup>2</sup>, Thomas Dreher<sup>1,3</sup>, Lilian Calvet<sup>2</sup>
+      </div>
+      <div class="affiliations">
+        <sup>1</sup> University Children's Hospital Zürich, Switzerland<br />
+        <sup>2</sup> Research in Orthopedic Computer Science (ROCS), University Hospital Balgrist, University of Zurich, Switzerland<br />
+        <sup>3</sup> Department of Orthopedic Surgery, University Hospital Balgrist, University of Zurich, Switzerland
+      </div>
+      <div class="resource-links mono">
+        <a href="https://www.arxiv.org/abs/2506.13292" target="_blank" rel="noreferrer">Paper</a>
+        <a href="https://github.com/rflepp/MultiviewXrayCT-Registration" target="_blank" rel="noreferrer">Code</a>
+        <a href="https://huggingface.co/datasets/eigenvivek/xvr-data" target="_blank" rel="noreferrer">Dataset (DICOM/NIfTI)</a>
+        <a href="https://zenodo.org/records/15753063" target="_blank" rel="noreferrer">Dataset (Zenodo)</a>
+      </div>
+    </header>
+
+    <main>
+      <section aria-labelledby="overview">
+        <h2 id="overview" class="mono">01. Overview</h2>
+        <p class="content-text">
+          Accurate intraoperative X-ray/CT registration is essential for surgical navigation in orthopedic procedures. Existing methods struggle with consistently achieving sub-millimeter accuracy, robustness under broad initial pose estimates, or require manual key-point annotations. We propose a novel multi-view X-ray/CT registration method for intraoperative bone registration that addresses these challenges.
+        </p>
+        <p class="content-text">
+          The method consists of a <strong>multi-view, contour-based iterative closest point (ICP) optimization</strong>. Unlike previous methods, which attempt to match bone contours across the entire silhouette in both imaging modalities, we focus on matching specific subcategories of contours corresponding to bone substructures. This reduces ambiguity in the ICP matches, resulting in a more robust and accurate registration solution that requires only two X-ray images and operates fully automatically.
+        </p>
+
+        <ul class="content-list">
+          <li><strong>Multi-view, contour-based ICP registration</strong> matching bone-substructure contours instead of whole-silhouette contours, reducing correspondence ambiguity.</li>
+          <li><strong>Fully automatic pipeline</strong> needing only 2 X-ray images and no manual key-point annotation.</li>
+          <li><strong>Sub-millimeter accuracy:</strong> 0.67mm mean reprojection distance vs. 5.35mm for a manually-assisted commercial solution (~8x improvement).</li>
+          <li><strong>New public cadaveric dataset:</strong> 5 specimens with real X-ray images, contour masks, X-ray poses, and paired CT scans.</li>
+          <li>Accepted to <strong>IPCAI 2025</strong>, published in the <em>International Journal of Computer Assisted Radiology and Surgery</em>.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="method">
+        <h2 id="method" class="mono">02. Method & Implementation</h2>
+
+        <div class="media-box">
+          <video autoplay muted loop playsinline>
+            <source src="images/bone-substructure-contours/substructure-extraction.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="media-caption">
+            <strong>Substructure Contour Extraction:</strong> Two intraoperative X-ray images are acquired and used to extract the bone substructure contours. These contours are obtained using a semantic segmentation U-Net trained on patient-specific synthetic data, with a loss function designed to favor thin, connected structures. In this example, we extract contours of the medial and lateral condyles as well as the femoral shaft. Simultaneously, the intrinsic and extrinsic parameters of the X-ray imaging system are calibrated using a custom fiducial marker.
+          </div>
+        </div>
+
+        <div class="media-box">
+          <video autoplay muted loop playsinline>
+            <source src="images/bone-substructure-contours/ct-model-reprojection.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="media-caption">
+            <strong>CT Model Reprojection:</strong> Preoperatively, the bone model is segmented from the CT scan, and its substructures are defined. Using the previously calibrated X-ray parameters, contours of the bone model and its respective substructures are projected onto the X-ray image planes.
+          </div>
+        </div>
+
+        <div class="media-box">
+          <video autoplay muted loop playsinline>
+            <source src="images/bone-substructure-contours/icp-optimization.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="media-caption">
+            <strong>Multi-View Substructure ICP Optimization:</strong> The extracted bone substructure contours are aligned to the projected CT model contours using a multi-view Iterative Closest Point (ICP) optimization, considering multiple views simultaneously and matching semantically extracted bone substructure contours with their corresponding projections from the CT model. For simplicity, this example shows the process with only one view. The optimization iteratively refines the alignment until convergence, yielding a robust and accurate registration by reducing matching ambiguity.
+          </div>
+        </div>
+
+        <div class="media-box">
+          <video autoplay muted loop playsinline>
+            <source src="images/bone-substructure-contours/multiview-registration.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div class="media-caption">
+            <strong>Example of Multi-View Registration:</strong> This video demonstrates the complete registration process. On the left, the setup features two calibrated X-ray images; on the right, the iterative registration process is visualized, showing the alignment of CT model substructure reprojections with the extracted bone contours. The initial pose begins with a challenging 180° rotation around the femoral shaft axis, typically difficult for standard registration methods.
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="results">
+        <h2 id="results" class="mono">03. Results</h2>
+        <p class="content-text">
+          The proposed registration method is evaluated on real X-ray images using mean reprojection distance (mRPD).
+        </p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Mean Reprojection Distance</th>
+              <th>Manual Intervention</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="highlight-cell">Commercial solution</td>
+              <td>5.35 mm</td>
+              <td>Required</td>
+            </tr>
+            <tr>
+              <td class="highlight-cell">Proposed method (ours)</td>
+              <td class="highlight-cell" style="color: var(--accent);">0.67 mm</td>
+              <td>None (fully automatic)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="content-text" style="margin-top: 2rem;">
+          The method consistently achieves sub-millimeter accuracy, an ~8x improvement over the commercial baseline, while offering improved practical applicability by being fully automatic. Our method offers a practical, accurate, and efficient solution for multi-view X-ray/CT registration in orthopedic surgeries, which can be easily combined with tracking systems, enhancing intraoperative navigation and contributing to more accurate surgical outcomes.
+        </p>
+      </section>
+
+      <section aria-labelledby="citation">
+        <h2 id="citation" class="mono">04. Citation</h2>
+        <p class="content-text">
+          A machine-readable Markdown version of this page (abstract, key contributions, results, BibTeX) is available at
+          <a href="papers/bone-substructure-contours-xray-ct-registration.md" style="color: var(--accent);">papers/bone-substructure-contours-xray-ct-registration.md</a>.
+        </p>
+        <pre class="bibtex" id="bibtex">@article{Flepp2025,
+  author  = {Flepp, Roman and Nissen, Leon and Sigrist, Bastian and
+             Nieuwland, Arend and Cavalcanti, Nicola and
+             F&#252;rnstahl, Philipp and Dreher, Thomas and Calvet, Lilian},
+  title   = {Automatic Multi-View X-Ray/CT Registration Using Bone Substructure Contours},
+  journal = {International Journal of Computer Assisted Radiology and Surgery},
+  year    = {2025},
+  month   = may,
+  day     = {20},
+  doi     = {10.1007/s11548-025-03391-4},
+  url     = {https://link.springer.com/article/10.1007/s11548-025-03391-4},
+}</pre>
+      </section>
+    </main>
+
+    <footer style="margin-top: 6rem; border-top: 1px solid var(--border); padding-top: 2rem; color: var(--text-muted);">
+      <div class="mono">&copy; <span id="year"></span> Roman Flepp</div>
+    </footer>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const spotlight = document.getElementById('spotlight');
+    let mx = 0, my = 0, cx = 0, cy = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+    });
+
+    function animate() {
+      cx += (mx - cx) * 0.15;
+      cy += (my - cy) * 0.15;
+      spotlight.style.left = `${cx}px`;
+      spotlight.style.top = `${cy}px`;
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+
+</html>

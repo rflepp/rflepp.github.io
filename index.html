@@ -4,7 +4,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description"
+    content="Research engineer at University Children's Hospital Zurich and University Hospital Balgrist (ROCS), working on 2D/3D X-ray-to-CT registration, electromagnetic surgical navigation, and computational photography." />
   <title></title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Roman Flepp",
+    "jobTitle": "Research Engineer",
+    "worksFor": [
+      { "@type": "Organization", "name": "University Children's Hospital Zurich" },
+      { "@type": "Organization", "name": "Research in Orthopedic Computer Science (ROCS), University Hospital Balgrist" }
+    ],
+    "description": "Computer vision research engineer focused on 2D/3D X-ray-to-CT registration and electromagnetic surgical navigation for orthopedic surgery.",
+    "knowsAbout": ["Computer Vision", "2D/3D Registration", "Surgical Navigation", "Computational Photography"],
+    "sameAs": [
+      "https://www.linkedin.com/in/roman-flepp/",
+      "https://scholar.google.com/",
+      "https://www.instagram.com/twintheworld"
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -189,9 +210,22 @@
       text-decoration: underline;
     }
 
+    .paper-contributions {
+      margin: 0 0 1.5rem;
+      padding-left: 1.25rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .paper-contributions li::marker {
+      color: var(--accent);
+    }
+
     .paper-links {
       display: flex;
       gap: 1rem;
+      flex-wrap: wrap;
     }
 
     .paper-links a {
@@ -304,6 +338,23 @@
             <p class="mono">Loading publications...</p>
           </div>
         </div>
+        <noscript>
+          <p class="paper-description">
+            Publication list is loaded from <a href="assets/data/papers.json">assets/data/papers.json</a>.
+            Machine-readable Markdown summaries (abstract, key contributions, results, BibTeX) for each paper are
+            available in the <a href="papers/">papers/</a> directory:
+          </p>
+          <ul class="paper-contributions">
+            <li><a href="papers/electromagnetic-navigation-femoral-osteotomy.md">Electromagnetic Navigation for
+                Femoral Osteotomy Using High-Accuracy X-ray-to-CT Registration</a></li>
+            <li><a href="papers/neuralbonereg.md">NeuralBoneReg: An Instance-Specific Label-Free Point Cloud-Based
+                Method for Multi-Modal Bone Surface Registration</a></li>
+            <li><a href="papers/bone-substructure-contours-xray-ct-registration.md">Automatic Multi-View X-Ray/CT
+                Registration Using Bone Substructure Contours</a></li>
+            <li><a href="papers/mobile-image-denoising-cvpr2024.md">Real-World Mobile Image Denoising Dataset with
+                Efficient Baselines</a></li>
+          </ul>
+        </noscript>
       </section>
 
       <section aria-labelledby="about">
@@ -346,11 +397,17 @@
             <h3>${p.title}</h3>
             <p class="paper-description">${p.summary}</p>
             ${p.summary && p.summary.length > 250 ? `<button class="toggle-abstract mono" onclick="toggleAbstract(this)">Show Abstract</button>` : ''}
+            ${p.contributions && p.contributions.length ? `
+            <ul class="paper-contributions">
+              ${p.contributions.map(c => `<li>${c}</li>`).join('')}
+            </ul>` : ''}
             <div class="paper-links">
               ${p.links.map(l => `<a href="${l.url}" target="_blank" rel="noreferrer">${l.text}</a>`).join('')}
             </div>
           </article>
         `).join('');
+
+        injectPaperStructuredData(papers);
       } catch (e) {
         console.error(e);
         container.innerHTML = `
@@ -361,6 +418,24 @@
       }
     }
     loadPublications();
+
+    function injectPaperStructuredData(papers) {
+      const data = {
+        "@context": "https://schema.org",
+        "@graph": papers.map(p => ({
+          "@type": "ScholarlyArticle",
+          "headline": p.title,
+          "abstract": p.summary,
+          "isPartOf": { "@type": "PublicationVolume", "name": p.venue },
+          "author": { "@type": "Person", "name": "Roman Flepp" },
+          "url": (p.links.find(l => /arxiv|paper|pdf/i.test(l.url)) || p.links[0]).url
+        }))
+      };
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify(data);
+      document.head.appendChild(script);
+    }
 
     function toggleAbstract(btn) {
       const card = btn.closest('.paper-card');
