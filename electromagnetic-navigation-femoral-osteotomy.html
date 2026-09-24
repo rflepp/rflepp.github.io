@@ -296,6 +296,25 @@
     @media (hover: none) {
       #spotlight { display: none; }
     }
+    .resource-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .resource-links a {
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 9999px;
+      color: var(--text-main);
+      font-size: 0.8rem;
+    }
+
+    .resource-links a:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
   </style>
 </head>
 
@@ -319,6 +338,9 @@
         * Corresponding authors: <a href="mailto:roman.flepp@kispi.uzh.ch" style="color: var(--accent);">roman.flepp@kispi.uzh.ch</a>, <a href="mailto:arend.nieuwland@balgrist.ch" style="color: var(--accent);">arend.nieuwland@balgrist.ch</a><br />
         <sup>†</sup> These authors contributed equally.<br />
         <sup>‡</sup> These authors jointly supervised this work and share last authorship.
+      </div>
+      <div class="resource-links mono">
+        <a href="https://arxiv.org/abs/2606.03893" target="_blank" rel="noreferrer">Check out the paper</a>
       </div>
     </header>
 
